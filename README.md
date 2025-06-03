@@ -45,17 +45,21 @@ pip install langchain openai  # Add other requirements as needed
 ### Example Usage
 
 ```python
-from langchain.agents import initialize_agent
-from langchain.tools import Tool
+from langchain_openai import ChatOpenAI
+model=ChatOpenAI(model="openai/o4-mini",base_url="https://openrouter.ai/api/v1", temperature=0.1, max_tokens=1500)
+# We can first choose the prompt we want to use to guide the agent.
 
-# Define or import your tools
-search_tool = Tool(name="Search", func=search_function, description="Search the web")
+from langchain import hub
+# Get the prompt to use - you can modify this!
+prompt = hub.pull("hwchase17/openai-functions-agent")
+prompt.messages
 
-# Initialize the agent
-agent = initialize_agent(
-    tools=[search_tool, ...],
-    llm=your_llm,  # e.g., OpenAI LLM
-    agent_type="zero-shot-react-description"
+from langchain_core.prompts import ChatPromptTemplate
+prompts=ChatPromptTemplate.from_messages(
+   [ ("system", "You are a helpful assistant. Use tools when needed. You habe to be given query based on the query you have to be search most relevent information from the tools you have been given. You can use the tools Tavily Search, Wikipedia and LangSmith Search to answer the questions asked by the user. If you are not sure about the answer, you can use the tools to search for information."),
+    ("user", "{input}"),
+    ("assistant", "{agent_scratchpad}"),
+    ]
 )
 
 # Run the agent
@@ -68,11 +72,8 @@ print(response)
 ```
 .
 ├── agent.py           # Main agent implementation
-├── tools/
-│   ├── search.py      # Example tool
-│   └── ...
 ├── README.md
-└── requirements.txt
+└requirements.txt
 ```
 
 ## Contributing
