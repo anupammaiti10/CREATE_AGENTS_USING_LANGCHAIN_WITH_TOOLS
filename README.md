@@ -39,7 +39,7 @@ The agents in this repo can:
 - Install dependencies:
 
 ```bash
-pip install langchain openai  # Add other requirements as needed
+pip install langchain_openai  # Add other requirements as needed
 ```
 
 ### Example Usage
